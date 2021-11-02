@@ -1,5 +1,8 @@
-#ifndef TYPES_H
-#define TYPES_H
+#ifndef OS_H
+#define OS_H
+
+#include "config.h"
+#include "cpu.h"
 
 #define i8 char
 #define u8 unsigned char
@@ -16,5 +19,8 @@
 #define BIT_MASK_5 0x20
 #define BIT_MASK_6 0x40
 #define BIT_MASK_7 0x80
+
+extern u8 CriticalCount;
+extern u8 const BitMasks[];
 
 #endif

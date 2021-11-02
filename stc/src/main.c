@@ -1,6 +1,4 @@
-#include <stc15.h>
-#include <gpio.h>
-#include <types.h>
+#include <os.h>
 
 void main()
 {
