@@ -15,14 +15,13 @@
 #define OS_TICK_INTERVAL   (65535 - OSC/12/OS_TIMER_DIVISION/OS_TICK_FREQUENCY)
 #endif
 
-#define OS_TASKS           2                      /* task count */
+#define OS_TASKS           2                      /* task count, max 7 custom tasks plus os idle task */
+#define TASK_STACK_SIZE    8                      /* stack size pro task, 2 reserved for PC */
 
 //SBIT(TIMER_MODE_BIT, _AUXR, BIT_MASK_7);       /* use timer 0 as OS timer */
 
-/*
-#define USE_TASK 0
-#if USE_TASK > 0
-#endif
-*/
+extern void task0(void);
+extern void task1(void);
+void (* const tasks[OS_TASKS])(void) = {task0, task1};
 
 #endif

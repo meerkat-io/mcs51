@@ -1,94 +1,52 @@
 #include "os.h"
 
-u8 TaskId = 0;
-u8 NextTaskId = 0;
+u8 task_id = 0;
+u8 tasks_delay[OS_TASKS];
+u8 tasks_status = 0xff;
+u8 tasks_stack[OS_TASKS][TASK_STACK_SIZE];
+u8 tasks_sp[OS_TASKS];
+u8 task_idle_stack[16];
 
-u8 TaskTicks[OS_TASKS];
-u8 TaskStatus = 0xff;
-u8 CriticalCount = 0;
-u8 const BitMasks[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
+u8 const BIT_MASKS[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
 
-void TaskSchedule(void)
+void task_switch(void)
 {
-    ENTER_CRITICAL();
-    for (NextTaskId = 0; NextTaskId < OS_TASKS; NextTaskId++)
+    u8 id = 0;
+    while (id < OS_TASKS)
     {
-        if ((TaskStatus & (1 << NextTaskId)) != 0)
+        // status 0:suspend, 1:ready
+        if ((tasks_status & BIT_MASKS[id]) != 0)
         {
-            //TaskSwitch(NextTaskId)
+            task_id = id;
+            //TaskSwitch()
             return;
         }
+        id++;
     }
     //TO-DO run idle task
-    EXIT_CRITICAL();
 }
 
-void TaskReady(u8 taskId)
+void task_idle(void)
 {
-    ENTER_CRITICAL();
-    TaskStatus |= 1 << taskId;
-    EXIT_CRITICAL();
-    //TaskSchedule();
+    while (1)
+    {
+        idle_mode();
+    }    
 }
 
-void TaskSuspend(u8 taskId)
+void os_tick(void) __interrupt(OS_TIMER_ISR)
 {
-    ENTER_CRITICAL();
-    TaskStatus &= ~(1 << taskId);
-    EXIT_CRITICAL();
-    //TaskSchedule();
+    u8 i = 0;
+    while (i < OS_TASKS)
+    {
+        if (tasks_delay[i] != 0)
+        {
+            tasks_delay[i]--;
+            if (tasks_delay[i] == 0)
+            {
+                task_ready(i);
+            }
+        }
+        i++;
+    }
 }
-
-void TaskSleep(u8 ticks)
-{
-    if (ticks == 0) return;
-    TaskTicks[TaskId] = ticks;
-    TaskSuspend(TaskId);
-}
-
-// void OSIntExit(void)
-// {
-//     u8 temp;
-
-//     OS_ENTER_CRITICAL();
-        
-//         Os_Enter_Sum = 0;            
-//         temp = OSTaskRuning;
-//         for (OSNextTaskID = 0; OSNextTaskID < OS_MAX_TASKS; OSNextTaskID++)
-//         {
-//             if ((temp & 0x01) != 0)
-//             {
-//                 break;
-//             }
-//             temp = temp >> 1;
-//         }
-//         OSIntCtxSw();               
-//     EXIT_CRITICAL();
-// }
-
-
-// void  OSTimeTick(void)
-// {
-//     uint8 i;
-
-//     for (i = 0; i < OS_MAX_TASKS; i++)                 
-//     {
-//         if (OSWaitTick[i] != 0 )
-//         {
-//             OSWaitTick[i]--;
-//             if (OSWaitTick[i] == 0)
-//             {
-//                 OSIntSendSignal(i);
-//             }
-//         }
-//     }
-// }
-
-
-// void TaskIdle(void)
-// {
-//     while(1)
-//     {
-//         PCON = PCON | 0x01;                     /* CPU进入休眠状态 */
-//     }
-// }
