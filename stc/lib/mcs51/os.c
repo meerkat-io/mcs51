@@ -62,6 +62,7 @@ void os_start(void)
         tasks_sp[i] = (u8)tasks_stack[i] + 1;
         tasks_stack[i][0] = (u16)tasks[i] & 0xff;
         tasks_stack[i][1] = (u16)tasks[i] >> 8;
+        i++;
     }
     
     task_start(0);

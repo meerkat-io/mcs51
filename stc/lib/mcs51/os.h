@@ -57,7 +57,7 @@
 
 extern u8 const BIT_MASKS[];
 
-void task_switch(void);
+extern void task_switch(void);
 
 // pulse, pwm
 
