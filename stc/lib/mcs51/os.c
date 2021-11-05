@@ -43,18 +43,16 @@ void os_start(void)
 {
     enter_critical();
 
-    //初始化定时器
-    /*
-    EA = 1;
-    IT0 = 1;
-    TMOD = 0x01;
-    ET0 = 1;  
-    TH0 = (65536 - UPDATE_TIME)/256;
-    TL0 = (65536 - UPDATE_TIME)%256;*/
+    clock_divide(OS_TIMER_DIVISION);
+    #ifdef OS_TIMER_MODE_1T
+    timer_12x(OS_TIMER);
+    #endif
+    load_timer(OS_TIMER, OS_TIMER_RELOAD);
+    start_timer(OS_TIMER);
+    enable_timer_interrupt(OS_TIMER, TRUE);
 
     task_idle_stack[0] = (u16)task_idle & 0xff;
     task_idle_stack[1] = (u16)task_idle >> 8;
-
     u8 i = 0;
     while (i < OS_TASKS)
     {
