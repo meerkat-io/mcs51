@@ -104,6 +104,7 @@ extern u8 const BIT_MASKS[];
 extern void task_switch(void);
 extern void os_start(void);
 
+// TO-DO
 // pulse, pwm
 
 #endif

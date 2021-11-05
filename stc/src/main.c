@@ -7,7 +7,6 @@ void (* const tasks[OS_TASKS])(void) = {task0, task1};
 void main(void)
 {
     gpio_mode(GPIO_OUTPUT_PUSH_PULL, 0, 0);
-    clock_divide(1);
 
     os_start();
 }
