@@ -85,14 +85,11 @@
 
 #define enter_critical()    EA = 0                          /* disable interrupt */
 #define exit_critical()     EA = 1                          /* enable interrupt */
-#define idle()              PCON = PCON | 0x01              /* set cpu to idle */
-#define enter_idle_mode()   SP = (u8)task_idle_stack + 1    /* enter cpu idle mode */
 
-#define task_ready(id)      tasks_status |= BIT_MASKS[id]
-#define task_suspend()      tasks_status &= ~BIT_MASKS[task_id], task_switch()
-#define task_start(id)      SP = tasks_sp[id]
-#define task_save()         tasks_sp[task_id] = SP
-#define os_wait(ticks)      tasks_delay[task_id] = ticks, tasks_status &= ~BIT_MASKS[task_id], task_switch()
+#define task_ready(id)      tasks_status |= BIT_MASKS[id]   /* set task is ready to run */
+#define task_start(id)      SP = tasks_sp[id]               /* move PC to target task */
+#define task_save()         tasks_sp[task_id] = SP          /* save PC of current task */
+#define enter_idle_mode()   exit_critical(), SP = (u8)task_idle_stack + 1    /* enter cpu idle mode */
 
 extern u8 task_id;
 extern u8 tasks_delay[];
@@ -101,8 +98,9 @@ extern u8 tasks_status;
 extern void (*const tasks[])(void);
 extern u8 const BIT_MASKS[];
 
-extern void task_switch(void);
+extern void task_suspend();
 extern void os_start(void);
+extern void os_wait(u8);
 
 // TO-DO
 // pulse, pwm

@@ -12,10 +12,6 @@ u8 const BIT_MASKS[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
 
 void task_switch(void)
 {
-    if (task_id < OS_TASKS)
-    {
-        tasks_sp[task_id] = SP;
-    }
     u8 id = 0;
     while (id < OS_TASKS)
     {
@@ -23,27 +19,40 @@ void task_switch(void)
         {
             task_id = id;
             task_start(id);
-            return;
+            enter_critical();
+            break;
         }
         id++;
     }
-    task_id = OS_TASKS;
-    enter_idle_mode();
-    exit_critical();
 }
 
 void task_idle(void)
 {
     while (1)
     {
-        idle();
+        task_switch();
     }    
+}
+
+void task_suspend()
+{
+    task_save();
+    tasks_status &= ~BIT_MASKS[task_id];
+    enter_idle_mode();
+}     
+
+void os_wait(u8 ticks)
+{
+    task_save();
+    tasks_delay[task_id] = ticks;
+    enter_idle_mode();
 }
 
 void os_start(void)
 {
     enter_critical();
 
+    // set timer
     clock_divide(OS_TIMER_DIVISION);
     #ifdef OS_TIMER_MODE_1T
     timer_12x(OS_TIMER);
@@ -52,6 +61,7 @@ void os_start(void)
     start_timer(OS_TIMER);
     enable_timer_interrupt(OS_TIMER, TRUE);
 
+    // init task
     task_idle_stack[0] = (u16)task_idle & 0xff;
     task_idle_stack[1] = (u16)task_idle >> 8;
     u8 i = 0;
@@ -64,11 +74,14 @@ void os_start(void)
         i++;
     }
     
+    // start first task
     task_start(0);
 }
 
 void os_tick(void) __interrupt(OS_TIMER_ISR)
 {
+    enter_critical();
+
     u8 i = 0;
     while (i < OS_TASKS)
     {
@@ -82,7 +95,6 @@ void os_tick(void) __interrupt(OS_TIMER_ISR)
         }
         i++;
     }
-    enter_critical();
-    task_id = OS_TASKS;
-    task_switch();
+
+    exit_critical();
 }
