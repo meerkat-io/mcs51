@@ -51,13 +51,19 @@
 
 #define task_ready(id)      tasks_status |= BIT_MASKS[id]
 #define task_suspend()      tasks_status &= ~BIT_MASKS[task_id], task_switch()
-#define task_wait(ticks)    tasks_delay[task_id] = ticks, tasks_status &= ~BIT_MASKS[task_id], task_switch()
 #define task_start(id)      SP = tasks_sp[id]
 #define task_save()         tasks_sp[task_id] = SP
+#define os_wait(ticks)      tasks_delay[task_id] = ticks, tasks_status &= ~BIT_MASKS[task_id], task_switch()
 
+extern u8 task_id;
+extern u8 tasks_delay[];
+extern u8 tasks_status;
+
+extern void (*const tasks[])(void);
 extern u8 const BIT_MASKS[];
 
 extern void task_switch(void);
+extern void os_start(void);
 
 // pulse, pwm
 

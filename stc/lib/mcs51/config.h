@@ -20,8 +20,4 @@
 
 //SBIT(TIMER_MODE_BIT, _AUXR, BIT_MASK_7);       /* use timer 0 as OS timer */
 
-extern void task0(void);
-extern void task1(void);
-void (* const tasks[OS_TASKS])(void) = {task0, task1};
-
 #endif
