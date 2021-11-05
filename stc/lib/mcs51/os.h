@@ -22,27 +22,38 @@
 #define GPIO_LOW  0
 #define GPIO_HIGH 1
 
-#define	gpio_input(port, pin)                   P##port##M1 |= BIT_MASKS[pin], P##port##M0 &= ~BIT_MASKS[pin]
-#define	gpio_input_pull_up(port, pin)           P##port##M1 &= ~BIT_MASKS[pin), P##port##M0 &= ~BIT_MASKS[pin]
-#define	gpio_output_push_pull(port, pin)        P##port##M1 |= BIT_MASKS[pin], P##port##M0 |= BIT_MASKS[pin]
-#define	gpio_output_open_drain(port, pin)       P##port##M1 &= ~BIT_MASKS[pin], P##port##M0 |= BIT_MASKS[pin]	
+#define GPIO_INPUT
+#define GPIO_INPUT_PULL_UP
+#define GPIO_OUTPUT_PUSH_PULL
+#define GPIO_OUTPUT_OPEN_DRAIN
 
-#define timer_clock_division_1()    CLK_DIV &= ~BIT_MASK_2, CLK_DIV &= ~BIT_MASK_1, CLK_DIV &= ~BIT_MASK_0
-#define timer_clock_division_2()    CLK_DIV &= ~BIT_MASK_2, CLK_DIV &= ~BIT_MASK_1, CLK_DIV |= BIT_MASK_0
-#define timer_clock_division_4()    CLK_DIV &= ~BIT_MASK_2, CLK_DIV |= BIT_MASK_1, CLK_DIV &= ~BIT_MASK_0
-#define timer_clock_division_8()    CLK_DIV &= ~BIT_MASK_2, CLK_DIV |= BIT_MASK_1, CLK_DIV |= BIT_MASK_0
-#define timer_clock_division_16()   CLK_DIV |= BIT_MASK_2, CLK_DIV &= ~BIT_MASK_1, CLK_DIV &= ~BIT_MASK_0
-#define timer_clock_division_32()   CLK_DIV |= BIT_MASK_2, CLK_DIV &= ~BIT_MASK_1, CLK_DIV |= BIT_MASK_0
-#define timer_clock_division_64()   CLK_DIV |= BIT_MASK_2, CLK_DIV |= BIT_MASK_1, CLK_DIV &= ~BIT_MASK_0
-#define timer_clock_division_128()  CLK_DIV |= BIT_MASK_2, CLK_DIV |= BIT_MASK_1, CLK_DIV |= BIT_MASK_0
+#define	GPIO_MODE_GPIO_INPUT(port, pin)                     P##port##M1 |= BIT_MASKS[pin], P##port##M0 &= ~BIT_MASKS[pin]
+#define	GPIO_MODE_GPIO_INPUT_PULL_UP(port, pin)             P##port##M1 &= ~BIT_MASKS[pin), P##port##M0 &= ~BIT_MASKS[pin]
+#define	GPIO_MODE_GPIO_OUTPUT_PUSH_PULL(port, pin)          P##port##M1 |= BIT_MASKS[pin], P##port##M0 |= BIT_MASKS[pin]
+#define	GPIO_MODE_GPIO_OUTPUT_OPEN_DRAIN(port, pin)         P##port##M1 &= ~BIT_MASKS[pin], P##port##M0 |= BIT_MASKS[pin]
 
-#define enter_critical()    EA = 0                      /* disable interrupt */
-#define exit_critical()     EA = 1                      /* enable interrupt */
-#define idle_mode()         PCON = PCON | 0x01          /* set cpu to idle */
+#define CLOCK_DIVIDE_1()            CLK_DIV &= ~BIT_MASK_2, CLK_DIV &= ~BIT_MASK_1, CLK_DIV &= ~BIT_MASK_0
+#define CLOCK_DIVIDE_2()            CLK_DIV &= ~BIT_MASK_2, CLK_DIV &= ~BIT_MASK_1, CLK_DIV |= BIT_MASK_0
+#define CLOCK_DIVIDE_4()            CLK_DIV &= ~BIT_MASK_2, CLK_DIV |= BIT_MASK_1, CLK_DIV &= ~BIT_MASK_0
+#define CLOCK_DIVIDE_8()            CLK_DIV &= ~BIT_MASK_2, CLK_DIV |= BIT_MASK_1, CLK_DIV |= BIT_MASK_0
+#define CLOCK_DIVIDE_16()           CLK_DIV |= BIT_MASK_2, CLK_DIV &= ~BIT_MASK_1, CLK_DIV &= ~BIT_MASK_0
+#define CLOCK_DIVIDE_32()           CLK_DIV |= BIT_MASK_2, CLK_DIV &= ~BIT_MASK_1, CLK_DIV |= BIT_MASK_0
+#define CLOCK_DIVIDE_64()           CLK_DIV |= BIT_MASK_2, CLK_DIV |= BIT_MASK_1, CLK_DIV &= ~BIT_MASK_0
+#define CLOCK_DIVIDE_128()          CLK_DIV |= BIT_MASK_2, CLK_DIV |= BIT_MASK_1, CLK_DIV |= BIT_MASK_0
+
+#define gpio_mode(mode, port, pin)      GPIO_MODE_##mode(port, pin)
+#define clock_divide(freq)              CLOCK_DIVIDE_##freq()
+
+#define enter_critical()    EA = 0                          /* disable interrupt */
+#define exit_critical()     EA = 1                          /* enable interrupt */
+#define idle()              PCON = PCON | 0x01              /* set cpu to idle */
+#define enter_idle_mode()   SP = (u8)task_idle_stack + 1    /* enter cpu idle mode */
 
 #define task_ready(id)      tasks_status |= BIT_MASKS[id]
 #define task_suspend()      tasks_status &= ~BIT_MASKS[task_id], task_switch()
 #define task_wait(ticks)    tasks_delay[task_id] = ticks, tasks_status &= ~BIT_MASKS[task_id], task_switch()
+#define task_start(id)      SP = tasks_sp[id]
+#define task_save()         tasks_sp[task_id] = SP
 
 extern u8 const BIT_MASKS[];
 

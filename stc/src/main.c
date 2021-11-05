@@ -1,8 +1,9 @@
 #include <os.h>
 
-void main()
+void main(void)
 {
-    gpio_output_push_pull(0, 0);
+    gpio_mode(GPIO_OUTPUT_PUSH_PULL, 0, 0);
+    clock_divide(1);
 
     u8 count = 0;
     while (1)
@@ -11,11 +12,10 @@ void main()
     }
 }
 
-void task0()
+void task0(void)
 {
 }
 
-void task1()
+void task1(void)
 {
-    
 }
