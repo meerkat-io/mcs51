@@ -18,7 +18,7 @@ void task_switch(void)
         if ((tasks_status & BIT_MASKS[id]) != 0)
         {
             task_id = id;
-            task_start(id);
+            task_resume(id);
             enter_critical();
             break;
         }

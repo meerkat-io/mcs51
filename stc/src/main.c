@@ -8,16 +8,29 @@ void main(void)
 {
     gpio_mode(GPIO_OUTPUT_PUSH_PULL, 3, 0);
     gpio_mode(GPIO_OUTPUT_PUSH_PULL, 3, 1);
+    gpio_mode(GPIO_OUTPUT_PUSH_PULL, 3, 2);
+    gpio_mode(GPIO_OUTPUT_PUSH_PULL, 3, 3);
 
-    os_start();
+    P30 = 1;
+    P31 = 1;
+    P32 = 1;
+    P33 = 1;
+
+    while (1)
+    {
+    }
+    
+    //os_start();
 }
 
 void task0(void)
 {
     while (1)
     {
-        P30 = !P30;
-        os_wait(10);
+        P30 = 1;
+        os_wait(50);
+        P30 = 0;
+        os_wait(100);
     }
 }
 
@@ -25,7 +38,9 @@ void task1(void)
 {
     while (1)
     {
-        P31 = !P31;
-        os_wait(5);
+        P31 = 1;
+        os_wait(100);
+        P31 = 0;
+        os_wait(50);
     }
 }
