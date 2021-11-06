@@ -88,7 +88,7 @@
 
 #define task_ready(id)      tasks_status |= BIT_MASKS[id]   /* set task is ready to run */
 #define task_start(id)      SP = tasks_sp[id]               /* move PC to target task */
-#define task_save()         tasks_sp[task_id] = SP          /* save PC of current task */
+#define save_stack()        tasks_sp[task_id] = SP          /* save PC of current task */
 #define enter_idle_mode()   exit_critical(), SP = (u8)task_idle_stack + 1    /* enter cpu idle mode */
 
 extern u8 task_id;
