@@ -51,7 +51,6 @@ void os_wait(u8 ticks)
 void os_start(void)
 {
     enter_critical();
-
     // set timer
     clock_divide(OS_TIMER_DIVISION);
     #ifdef OS_TIMER_MODE_1T
@@ -60,7 +59,6 @@ void os_start(void)
     load_timer(OS_TIMER, OS_TIMER_RELOAD);
     start_timer(OS_TIMER);
     enable_timer_interrupt(OS_TIMER, TRUE);
-
     // init task
     task_idle_stack[0] = (u16)task_idle & 0xff;
     task_idle_stack[1] = (u16)task_idle >> 8;
@@ -73,7 +71,6 @@ void os_start(void)
         tasks_stack[i][1] = (u16)tasks[i] >> 8;
         i++;
     }
-    
     // start first task
     task_start(0);
 }
@@ -81,7 +78,6 @@ void os_start(void)
 void os_tick(void) __interrupt(OS_TIMER_ISR)
 {
     enter_critical();
-
     u8 i = 0;
     while (i < OS_TASKS)
     {
@@ -95,6 +91,5 @@ void os_tick(void) __interrupt(OS_TIMER_ISR)
         }
         i++;
     }
-
     exit_critical();
 }
