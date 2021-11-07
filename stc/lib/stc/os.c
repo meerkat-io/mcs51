@@ -1,5 +1,4 @@
 #include "os.h"
-#include "lint.h"
 
 u8 task_id = 0;
 u8 tasks_delay[OS_TASKS];

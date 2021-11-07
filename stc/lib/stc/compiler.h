@@ -221,7 +221,7 @@ extern void _nop (void);
  */
 #else
 # warning unrecognized compiler
-# define SBIT(name, addr, bit)  volatile bool           name
+# define SBIT(name, addr, bit)  volatile unsigned char  name
 # define SFR(name, addr)        volatile unsigned char  name
 # define SFRX(name, addr)       volatile unsigned char  name
 # define SFR16(name, addr)      volatile unsigned short name
@@ -229,6 +229,22 @@ extern void _nop (void);
 # define SFR16LEX(name, addr)   volatile unsigned short name
 # define SFR32(name, fulladdr)  volatile unsigned long  name
 # define SFR32E(name, fulladdr) volatile unsigned long  name
+
+#define __data
+#define __near
+#define __idata
+#define __xdata
+#define __far
+#define __pdata
+#define __code
+#define __bit bool
+#define __sfr volatile unsigned char
+#define __sbit volatile bool
+#define __critical
+#define __at(x)             /* use "__at (0xab)" instead of "__at 0xab" */
+#define __using(x)
+#define __interrupt(x)
+#define __naked
 
 #endif
 
