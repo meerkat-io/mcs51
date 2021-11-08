@@ -61,11 +61,11 @@
 #define STOP_TIMER_3()      T3R = 0
 #define STOP_TIMER_4()      T4R = 0
 
-#define LOAD_TIMER_0(time)        TL0 = time, TH0 = time >> 8
-#define LOAD_TIMER_1(time)        TL1 = time, TH1 = time >> 8
-#define LOAD_TIMER_2(time)        T2L = time, T2H = time >> 8
-#define LOAD_TIMER_3(time)        T3L = time, T3H = time >> 8
-#define LOAD_TIMER_4(time)        T4L = time, T4H = time >> 8
+#define LOAD_TIMER_0(time)        TL0 = time & 0xff, TH0 = time >> 8
+#define LOAD_TIMER_1(time)        TL1 = time & 0xff, TH1 = time >> 8
+#define LOAD_TIMER_2(time)        T2L = time & 0xff, T2H = time >> 8
+#define LOAD_TIMER_3(time)        T3L = time & 0xff, T3H = time >> 8
+#define LOAD_TIMER_4(time)        T4L = time & 0xff, T4H = time >> 8
 
 #define __gpio_mode(mode, port, pin)              GPIO_MODE_##mode(port, pin)
 #define gpio_mode(mode, port, pin)                __gpio_mode(mode, port, pin)

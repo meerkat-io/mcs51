@@ -17,7 +17,6 @@
 #endif
 
 #define OS_TASKS                2                      /* task count, max 8 custom tasks */
-#define TASK_STACK_LOCATION     __data                 /* task stack location : data, idata, xdata */
 #define TASK_STACK_SIZE         8                      /* stack size pro task, 2 reserved for PC */
 
 #endif

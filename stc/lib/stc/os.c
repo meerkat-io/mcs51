@@ -3,7 +3,7 @@
 u8 task_id = 0;
 u8 tasks_delay[OS_TASKS];
 u8 tasks_status = 0xff; // status 0:suspend, 1:ready
-u8 TASK_STACK_LOCATION tasks_stack[OS_TASKS][TASK_STACK_SIZE];
+u8 __idata tasks_stack[OS_TASKS][TASK_STACK_SIZE];
 u8 tasks_sp[OS_TASKS];
 u8 task_idle_stack[16];
 
