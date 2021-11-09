@@ -237,9 +237,9 @@ extern void _nop (void);
 #define __far
 #define __pdata
 #define __code
-#define __bit bool
+#define __bit unsigned char
 #define __sfr volatile unsigned char
-#define __sbit volatile bool
+#define __sbit volatile unsigned char
 #define __critical
 #define __at(x)             /* use "__at (0xab)" instead of "__at 0xab" */
 #define __using(x)

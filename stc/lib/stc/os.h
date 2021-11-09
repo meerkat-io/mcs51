@@ -2,6 +2,7 @@
 #define OS_H
 
 #include "config.h"
+#include "compiler.h"
 
 #define i8 char
 #define u8 unsigned char
@@ -78,7 +79,7 @@
 #define load_timer(timer, time)                   __load_timer(timer, time)
 #define __start_timer(timer)                      START_TIMER_##timer()
 #define start_timer(timer)                        __start_timer(timer)
-#define __stop_timer(timer)                       STOP_TIMMER_##timer()
+#define __stop_timer(timer)                       STOP_TIMER_##timer()
 #define stop_timer(timer)                         __stop_timer(timer)
 #define __enable_timer_interrupt(timer, enable)   ET##timer = enable
 #define enable_timer_interrupt(timer, enable)     __enable_timer_interrupt(timer, enable)
@@ -92,9 +93,9 @@
 #define save_stack()        tasks_sp[task_id] = SP          /* save PC of current task */
 #define enter_idle_mode()   exit_critical(), SP = (u8)task_idle_stack + 1    /* enter cpu idle mode */
 
-extern u8 task_id;
-extern u8 tasks_delay[];
-extern u8 tasks_status;
+extern __idata u8 task_id;
+extern __idata u8 tasks_delay[];
+extern __idata u8 tasks_status;
 
 extern void (*const tasks[])(void);
 extern u8 const BIT_MASKS[];
@@ -104,6 +105,13 @@ extern void os_start(void);
 extern void os_wait(u8);
 
 // TO-DO
-// pulse, pwm
+// pulse
+// i2c, spi, uart(soft, hard), 1-wire
+// cron & system time
+// pcm(audio), tone?
+// rotary(encodec)
+// net(tcp,udp,dns)
+// pixel(buffer)
+// i2c display
 
 #endif
