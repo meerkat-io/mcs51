@@ -1,0 +1,10 @@
+TO-DO
+pulse, hard pwm
+
+i2c, spi, uart(soft, hard), 1-wire
+cron & system time
+pcm(audio), tone?
+rotary(encodec)
+net(tcp,udp,dns)
+pixel(buffer)
+i2c display

@@ -104,14 +104,4 @@ extern void task_suspend();
 extern void os_start(void);
 extern void os_wait(u8);
 
-// TO-DO
-// pulse
-// i2c, spi, uart(soft, hard), 1-wire
-// cron & system time
-// pcm(audio), tone?
-// rotary(encodec)
-// net(tcp,udp,dns)
-// pixel(buffer)
-// i2c display
-
 #endif
