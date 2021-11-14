@@ -84,14 +84,15 @@
 #define __enable_timer_interrupt(timer, enable)   ET##timer = enable
 #define enable_timer_interrupt(timer, enable)     __enable_timer_interrupt(timer, enable)
 
-#define enter_critical()    EA = 0                          /* disable interrupt */
-#define exit_critical()     EA = 1                          /* enable interrupt */
+#define enter_critical()    EA = 0                /* disable interrupt */
+#define exit_critical()     EA = 1                /* enable interrupt */
 
-#define task_ready(id)      tasks_status |= BIT_MASKS[id]   /* set task is ready to run */
-#define task_start(id)      SP = (u8)tasks_stack[id] + 1    /* move PC to target task */
-#define task_resume(id)     SP = tasks_sp[id]               /* move PC to target task */
-#define save_stack()        tasks_sp[task_id] = SP          /* save PC of current task */
+#define task_ready(id)      tasks_status |= BIT_MASKS[id]                    /* set task is ready to run */
+#define task_start(id)      SP = (u8)tasks_stack[id] + 1                     /* move PC to target task */
+#define task_resume(id)     SP = tasks_sp[id]                                /* move PC to target task */
+#define save_stack()        tasks_sp[task_id] = SP                           /* save PC of current task */
 #define enter_idle_mode()   exit_critical(), SP = (u8)task_idle_stack + 1    /* enter cpu idle mode */
+#define cpu_idle()          PCON = PCON | 0x01                               /* CPU enter idle mode */
 
 extern __idata u8 task_id;
 extern __idata u8 tasks_delay[];

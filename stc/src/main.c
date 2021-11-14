@@ -26,9 +26,9 @@ void task0(void)
     while (1)
     {
         P30 = 1;
-        os_wait(50);
+        os_wait(5);
         P30 = 0;
-        os_wait(100);
+        os_wait(10);
     }
 }
 
@@ -37,8 +37,8 @@ void task1(void)
     while (1)
     {
         P31 = 1;
-        os_wait(100);
+        os_wait(8);
         P31 = 0;
-        os_wait(50);
+        os_wait(6);
     }
 }
