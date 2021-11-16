@@ -47,9 +47,9 @@ void task1(void)
 {
     while (1)
     {
-        //P26 = 0;
-        task_sleep(100);
-        //P26 = 1;
-        task_sleep(100);
+        P26 = 0;
+        task_sleep(50);
+        P26 = 1;
+        task_sleep(50);
     }
 }
