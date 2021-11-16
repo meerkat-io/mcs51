@@ -1,5 +1,6 @@
 #include "os.h"
 
+u8 __idata tick = 0;
 u8 __idata task_id = 0;
 u8 __idata task_idle_stack[16];
 u8 __idata tasks_delay[OS_TASKS];
@@ -11,20 +12,22 @@ u8 const BIT_MASKS[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
 
 void task_idle(void)
 {
-    //P27 = 0;
     while (1)
     {
-        u8 i = 0;
-        while (i < OS_TASKS)
+        if (tick > 0)
         {
-            if ((tasks_status & BIT_MASKS[i]) != 0)
+            enter_critical();
+            u8 i = 0;
+            while (i < OS_TASKS)
             {
-                //task_resume(i);
-                task_start(i);
-                //enter_critical();
-                return;
+                if ((tasks_status & BIT_MASKS[i]) != 0)
+                {
+                    task_resume(i);
+                    return;
+                }
+                i++;
             }
-            i++;
+            exit_critical();
         }
     }
 }
@@ -36,7 +39,7 @@ void task_suspend()
     enter_idle_mode();
 }
 
-void os_wait(u8 ticks)
+void task_sleep(u8 ticks)
 {
     save_stack();
     tasks_status &= ~BIT_MASKS[task_id];
@@ -69,20 +72,11 @@ void os_start(void)
         i++;
     }
     // start first task
-    exit_critical();
     task_start(0);
 }
 
-u8 sum = 0;
 void os_tick(void) __interrupt(OS_TIMER_ISR)
 {
-    sum++;
-    if (sum == 100)
-    {
-        sum = 0;
-        P26 = !P26;
-    }
-
     u8 i = 0;
     while (i < OS_TASKS)
     {
@@ -96,4 +90,5 @@ void os_tick(void) __interrupt(OS_TIMER_ISR)
         }
         i++;
     }
+    tick++;
 }

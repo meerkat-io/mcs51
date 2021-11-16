@@ -102,8 +102,8 @@ extern void (*const tasks[])(void);
 extern u8 const BIT_MASKS[];
 
 extern void task_suspend();
+extern void task_sleep(u8);
 extern void os_start(void);
-extern void os_wait(u8);
 extern void os_tick(void) __interrupt(OS_TIMER_ISR);
 
 #endif

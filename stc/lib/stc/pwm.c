@@ -12,9 +12,9 @@ u8 const note_reload_low[] = {125, 118, 111, 105, 99, 94, 88, 83, 79, 74, 70, 66
 
 void start_pwm(void)
 {
-    #ifdef PWM_TIMER_MODE_1T
+#ifdef PWM_TIMER_MODE_1T
     timer_12x(PWM_TIMER);
-    #endif
+#endif
     load_timer(PWM_TIMER, PWM_RELOAD);
     start_timer(PWM_TIMER);
     enable_timer_interrupt(PWM_TIMER, TRUE);
