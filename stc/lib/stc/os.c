@@ -13,7 +13,7 @@ void task_idle(void)
 {
     while (1)
     {
-        cpu_idle();
+        //cpu_idle();
     }    
 }
 
@@ -37,9 +37,10 @@ void os_start(void)
     enter_critical();
     // set timer
     clock_divide(TIMER_DIVISION);
-    #ifdef OS_TIMER_MODE_1T
+    #if OS_TIMER_MODE_1T > 0
     timer_12x(OS_TIMER);
     #endif
+    reset_timer();
     load_timer(OS_TIMER, OS_TIMER_RELOAD);
     start_timer(OS_TIMER);
     enable_timer_interrupt(OS_TIMER, TRUE);
@@ -59,8 +60,16 @@ void os_start(void)
     enter_idle_mode();
 }
 
+u8 sum = 0;
 void os_tick(void) __interrupt(OS_TIMER_ISR)
 {
+    sum++;
+    if (sum == 100)
+    {
+        sum = 0;
+        P26 = !P26;
+    }
+
     u8 __idata i = 0;
     while (i < OS_TASKS)
     {

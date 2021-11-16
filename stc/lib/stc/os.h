@@ -72,7 +72,7 @@
 #define gpio_mode(mode, port, pin)                __gpio_mode(mode, port, pin)
 #define __clock_divide(freq)                      CLOCK_DIVIDE_##freq()
 #define clock_divide(freq)                        __clock_divide(freq)
-#define __timer_12x(timer)                          TIMER_##timer##_1T()
+#define __timer_12x(timer)                        TIMER_##timer##_1T()
 #define timer_12x(timer)                          __timer_12x(timer)
 #define reset_timer()                             TMOD = 0x00;
 #define __load_timer(timer, time)                 LOAD_TIMER_##timer(time)
@@ -104,5 +104,6 @@ extern u8 const BIT_MASKS[];
 extern void task_suspend();
 extern void os_start(void);
 extern void os_wait(u8);
+extern void os_tick(void) __interrupt(OS_TIMER_ISR);
 
 #endif

@@ -1,0 +1,1 @@
+sudo ~/.local/bin/stcgal -P stc15 -t 11059.2 ./.pio/build/stc15w408as/firmware.hex

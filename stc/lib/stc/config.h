@@ -15,10 +15,10 @@
 #else
 #define OS_TIMER_RELOAD   (65535 - OSC/12/TIMER_DIVISION/OS_TICK_FREQUENCY)
 #endif
-#define OS_TASKS                2                 /* task count, max 8 custom tasks */
-#define TASK_STACK_SIZE         8                 /* stack size pro task, 2 reserved for PC */
+#define OS_TASKS                1                 /* task count, max 8 custom tasks */
+#define TASK_STACK_SIZE         16                /* stack size pro task, 2 reserved for PC */
 
-#define PWM                     2                 /* soft pwm/tone pin count */
+#define PWM                     0                 /* soft pwm/tone pin count */
 #define PWM_0                   P30               /* pwm pin 0 */
 #define PWM_1                   P31               /* pwm pin 1 */
 #define PWM_TIMER               1                 /* pwm timer, default : timer 1 */
