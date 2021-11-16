@@ -36,6 +36,7 @@ void task_suspend()
 {
     save_stack();
     tasks_status &= ~BIT_MASKS[task_id];
+    tick++;
     enter_idle_mode();
 }
 
@@ -44,6 +45,7 @@ void task_sleep(u8 ticks)
     save_stack();
     tasks_status &= ~BIT_MASKS[task_id];
     tasks_delay[task_id] = ticks;
+    tick++;
     enter_idle_mode();
 }
 

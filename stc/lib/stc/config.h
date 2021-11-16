@@ -4,7 +4,7 @@
 #include "stc15.h"                                /* the mcu to use */
 
 #define OSC                11059200L              /* main osc frequency: 5529600L 11059200L 22118400L 6000000L 12000000L 24000000L*/
-#define TIMER_DIVISION  1                         /* timer frequency division */
+#define TIMER_DIVISION     1                      /* timer frequency division */
 
 #define OS_TIMER           0                      /* os timer, default : timer 0 */
 #define OS_TIMER_ISR       1                      /* rtos timer interrupt (for timer 0) */ 
@@ -15,7 +15,7 @@
 #else
 #define OS_TIMER_RELOAD   (65535 - OSC/12/TIMER_DIVISION/OS_TICK_FREQUENCY)
 #endif
-#define OS_TASKS                1                 /* task count, max 8 custom tasks */
+#define OS_TASKS                2                 /* task count, max 8 custom tasks */
 #define TASK_STACK_SIZE         16                /* stack size pro task, 2 reserved for PC */
 
 #define PWM                     0                 /* soft pwm/tone pin count */
