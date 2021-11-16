@@ -88,8 +88,8 @@
 #define exit_critical()     EA = 1                /* enable interrupt */
 
 #define task_ready(id)      tasks_status |= BIT_MASKS[id]                    /* set task is ready to run */
-#define task_start(id)      SP = (u8)tasks_stack[id] + 1                     /* move PC to target task */
-#define task_resume(id)     SP = tasks_sp[id]                                /* move PC to target task */
+#define task_start(id)      task_id = id, SP = (u8)tasks_stack[id] + 1       /* move PC to target task */
+#define task_resume(id)     task_id = id, SP = tasks_sp[id]                  /* move PC to target task */
 #define save_stack()        tasks_sp[task_id] = SP                           /* save PC of current task */
 #define enter_idle_mode()   exit_critical(), SP = (u8)task_idle_stack + 1    /* enter cpu idle mode */
 #define cpu_idle()          PCON = PCON | 0x01                               /* CPU enter idle mode */

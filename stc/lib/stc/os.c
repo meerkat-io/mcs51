@@ -11,10 +11,22 @@ u8 const BIT_MASKS[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
 
 void task_idle(void)
 {
+    //P27 = 0;
     while (1)
     {
-        //cpu_idle();
-    }    
+        u8 i = 0;
+        while (i < OS_TASKS)
+        {
+            if ((tasks_status & BIT_MASKS[i]) != 0)
+            {
+                //task_resume(i);
+                task_start(i);
+                //enter_critical();
+                return;
+            }
+            i++;
+        }
+    }
 }
 
 void task_suspend()
@@ -22,7 +34,7 @@ void task_suspend()
     save_stack();
     tasks_status &= ~BIT_MASKS[task_id];
     enter_idle_mode();
-}     
+}
 
 void os_wait(u8 ticks)
 {
@@ -37,9 +49,9 @@ void os_start(void)
     enter_critical();
     // set timer
     clock_divide(TIMER_DIVISION);
-    #if OS_TIMER_MODE_1T > 0
+#if OS_TIMER_MODE_1T > 0
     timer_12x(OS_TIMER);
-    #endif
+#endif
     reset_timer();
     load_timer(OS_TIMER, OS_TIMER_RELOAD);
     start_timer(OS_TIMER);
@@ -56,8 +68,9 @@ void os_start(void)
         tasks_stack[i][1] = (u16)tasks[i] >> 8;
         i++;
     }
-    // enter idle mode
-    enter_idle_mode();
+    // start first task
+    exit_critical();
+    task_start(0);
 }
 
 u8 sum = 0;
@@ -70,7 +83,7 @@ void os_tick(void) __interrupt(OS_TIMER_ISR)
         P26 = !P26;
     }
 
-    u8 __idata i = 0;
+    u8 i = 0;
     while (i < OS_TASKS)
     {
         if (tasks_delay[i] != 0)
@@ -80,18 +93,6 @@ void os_tick(void) __interrupt(OS_TIMER_ISR)
             {
                 task_ready(i);
             }
-        }
-        i++;
-    }
-    i = 0;
-    while (i < OS_TASKS)
-    {
-        if ((tasks_status & BIT_MASKS[i]) != 0)
-        {
-            task_id = i;
-            task_resume(i);
-            enter_critical();
-            break;
         }
         i++;
     }
