@@ -45,63 +45,65 @@
     B6	        1975.53	    17.46       17      16
  * *****************************************/
 
-#define update_pwm(pwm_indexd)                                      \
-   {                                                                \
-      if ((pwm_status & BIT_MASK_##pwm_indexd) != 0)                \
-      {                                                             \
-         if (pwm_count[pwm_indexd] == 0)                            \
-         {                                                          \
-            if (PWM_##pwm_indexd == 0)                              \
-            {                                                       \
-               pwm_count[pwm_indexd] = pwm_high_reload[pwm_indexd]; \
-               PWM_##pwm_indexd = 1;                                \
-            }                                                       \
-            else                                                    \
-            {                                                       \
-               pwm_count[pwm_indexd] = pwm_low_reload[pwm_indexd];  \
-               PWM_##pwm_indexd = 0;                                \
-            }                                                       \
-         }                                                          \
-         else                                                       \
-         {                                                          \
-            pwm_count[pwm_indexd]--;                                \
-         }                                                          \
-      }                                                             \
+#if PWM_SOFT > 0
+#define update_pwm_soft(pwm_soft_index)                                                 \
+   {                                                                                    \
+      if ((pwm_soft_status & BIT_MASK_##pwm_soft_index) != 0)                           \
+      {                                                                                 \
+         if (pwm_soft_count[pwm_soft_index] == 0)                                       \
+         {                                                                              \
+            if (PWM_SOFT_##pwm_soft_index == PWM_LOW)                                   \
+            {                                                                           \
+               pwm_soft_count[pwm_soft_index] = pwm_soft_high_reload[pwm_soft_index];   \
+               PWM_SOFT_##pwm_soft_index = PWM_HIGH;                                    \
+            }                                                                           \
+            else                                                                        \
+            {                                                                           \
+               pwm_soft_count[pwm_soft_index] = pwm_soft_low_reload[pwm_soft_index];    \
+               PWM_SOFT_##pwm_soft_index = PWM_LOW;                                     \
+            }                                                                           \
+         }                                                                              \
+         else                                                                           \
+         {                                                                              \
+            pwm_soft_count[pwm_soft_index]--;                                           \
+         }                                                                              \
+      }                                                                                 \
    }
 
-#define set_duty(pwm_index, duty)             \
-   {                                          \
-      pwm_high_reload[pwm_index] = duty;      \
-      pwm_low_reload[pwm_index] = 255 - duty; \
-      pwm_status |= BIT_MASK_##pwm_index;     \
-   }
-#define set_duty_on(pwm_index) pwm_status &= ~BIT_MASK_##pwm_index, PWM_##pwm_index = 1
-#define set_duty_off(pwm_index) pwm_status &= ~BIT_MASK_##pwm_index, PWM_##pwm_index = 0
-#define set_tone(pwm_index, freq)                                            \
-   {                                                                         \
-      pwm_status |= BIT_MASK_##pwm_index;                                    \
-      u16 reload = 0xffff / freq;                                            \
-      pwm_high_reload[pwm_index] = (u8)(reload / 2);                         \
-      pwm_low_reload[pwm_index] = (u8)(reload - pwm_high_reload[pwm_index]); \
-   }
-#define unset_tone(pwm_index) pwm_status &= ~BIT_MASK_##pwm_index, PWM_##pwm_index = 0
-#define play_note(pwm_index, note_index)                         \
+#define set_pwm_soft_duty(pwm_soft_index, duty)                  \
    {                                                             \
-      pwm_status |= BIT_MASK_##pwm_index;                        \
-      pwm_high_reload[pwm_index] = note_reload_high[note_index]; \
-      pwm_low_reload[pwm_index] = note_reload_low[note_index];   \
+      pwm_soft_high_reload[pwm_soft_index] = duty;               \
+      pwm_soft_low_reload[pwm_soft_index] = 255 - duty;          \
+      pwm_soft_status |= BIT_MASK_##pwm_soft_index;              \
    }
-#define stop_note(pwm_index) pwm_status &= ~BIT_MASK_##pwm_index
+#define set_pwm_soft_duty_on(pwm_soft_index) pwm_soft_status &= ~BIT_MASK_##pwm_soft_index, PWM_SOFT_##pwm_soft_index = PWM_HIGH
+#define set_pwm_soft_duty_off(pwm_soft_index) pwm_soft_status &= ~BIT_MASK_##pwm_soft_index, PWM_SOFT_##pwm_soft_index = PWM_LOW
+#define set_tone_soft(pwm_soft_index, freq)                                                      \
+   {                                                                                             \
+      pwm_soft_status |= BIT_MASK_##pwm_soft_index;                                              \
+      u16 reload = 0xffff / freq;                                                                \
+      pwm_soft_high_reload[pwm_soft_index] = (u8)(reload / 2);                                   \
+      pwm_soft_low_reload[pwm_soft_index] = (u8)(reload - pwm_soft_high_reload[pwm_soft_index]); \
+   }
+#define unset_tone_soft(pwm_soft_index) pwm_soft_status &= ~BIT_MASK_##pwm_soft_index, PWM_##pwm_soft_index = PWM_LOW
+#define play_note_soft(pwm_soft_index, note_soft_index)                               \
+   {                                                                                  \
+      pwm_soft_status |= BIT_MASK_##pwm_soft_index;                                   \
+      pwm_soft_high_reload[pwm_soft_index] = note_soft_reload_high[note_soft_index];  \
+      pwm_soft_low_reload[pwm_soft_index] = note_soft_reload_low[note_soft_index];    \
+   }
+#define stop_note_soft(pwm_soft_index) pwm_soft_status &= ~BIT_MASK_##pwm_soft_index
 
-#if PWM > 0
-extern u8 __idata pwm_status;
-extern u8 __idata pwm_high_reload[PWM];
-extern u8 __idata pwm_low_reload[PWM];
-extern u8 const note_reload_high[];
-extern u8 const note_reload_low[];
+extern u8 __idata pwm_soft_status;
+extern u8 __idata pwm_soft_count[];
+extern u8 __idata pwm_soft_high_reload[];
+extern u8 __idata pwm_soft_low_reload[];
+extern u8 const note_soft_reload_high[];
+extern u8 const note_soft_reload_low[];
 
-extern void start_pwm(void);
-extern void stop_pwm(void);
+extern void start_pwm_soft(void);
+extern void stop_pwm_soft(void);
+extern void pwm_soft_tick(void) __interrupt(PWM_SOFT_TIMER_ISR);
 #endif
 
 #endif

@@ -1,11 +1,12 @@
 #include "os.h"
 
+#if OS_TASKS > 0
 u8 __idata tick = 0;
 u8 __idata task_id = 0;
 u8 __idata task_idle_stack[16];
 u8 __idata tasks_delay[OS_TASKS];
 u8 __idata tasks_status = 0xff; // status 0:suspend, 1:ready
-u8 __idata tasks_stack[OS_TASKS][TASK_STACK_SIZE];
+u8 __idata tasks_stack[OS_TASKS][OS_TASK_STACK_SIZE];
 u8 __idata tasks_sp[OS_TASKS];
 
 u8 const BIT_MASKS[] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
@@ -79,6 +80,7 @@ void os_start(void)
 
 void os_tick(void) __interrupt(OS_TIMER_ISR)
 {
+    enter_critical();
     u8 i = 0;
     while (i < OS_TASKS)
     {
@@ -93,4 +95,6 @@ void os_tick(void) __interrupt(OS_TIMER_ISR)
         i++;
     }
     tick++;
+    exit_critical();
 }
+#endif

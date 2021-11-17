@@ -20,9 +20,6 @@
 #define BIT_MASK_6 0x40
 #define BIT_MASK_7 0x80
 
-#define GPIO_LOW  0
-#define GPIO_HIGH 1
-
 #define FALSE 0
 #define TRUE  1
 
@@ -87,6 +84,7 @@
 #define enter_critical()    EA = 0                /* disable interrupt */
 #define exit_critical()     EA = 1                /* enable interrupt */
 
+#if OS_TASKS > 0
 #define task_ready(id)      tasks_status |= BIT_MASKS[id]                    /* set task is ready to run */
 #define task_start(id)      task_id = id, SP = (u8)tasks_stack[id] + 1       /* move PC to target task */
 #define task_resume(id)     task_id = id, SP = tasks_sp[id]                  /* move PC to target task */
@@ -105,5 +103,6 @@ extern void task_suspend();
 extern void task_sleep(u8);
 extern void os_start(void);
 extern void os_tick(void) __interrupt(OS_TIMER_ISR);
+#endif
 
 #endif
