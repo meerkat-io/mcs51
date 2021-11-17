@@ -1,13 +1,15 @@
-#include <os.h>
+#include <task.h>
 #include <pwm.h>
 
 void task0(void);
 void task1(void);
-void (*const tasks[OS_TASKS])(void) = {task0}; //, task1};
+void (*const tasks[TASKS])(void) = {task0, task1};
 
 void main(void)
 {
     enter_critical();
+
+    clock_divide(TIMER_DIVISION);
 
     gpio_mode(GPIO_OUTPUT_PUSH_PULL, 0, 0);
     gpio_mode(GPIO_OUTPUT_PUSH_PULL, 0, 1);
@@ -27,46 +29,40 @@ void main(void)
     P06 = 1;
     P07 = 1;
 
-    u8 duty = 63;
-    //set_pwm_soft_duty_on(0);
-    set_pwm_soft_duty(0, duty);
-    //set_tone_soft(1, 440);
+    set_pwm_soft_duty(0, 20);
+    set_pwm_soft_duty(1, 240);
     pwm_soft_start();
 
-    os_start();
+    reset_timer();
+
+    task_start();
+    task_run();
 }
-/*
-void pwm_tick(void) __interrupt(PWM_SOFT_TIMER_ISR)
-{
-    PWM_SOFT_0 = PWM_HIGH;
-}*/
 
 void task0(void)
 {
-    while (1)
-    {
-        P00 = 0;
-        task_sleep(10);
-        P00 = 1;
-        task_sleep(10);
-        P00 = 0;
-        task_sleep(10);
-        P00 = 1;
-        task_sleep(10);
-        P00 = 0;
-        task_sleep(10);
-        P00 = 1;
-        task_sleep(100);
-    }
+    P00 = !P00;
+    task_sleep(10);
 }
+
+const u8 song[8] = {12, 12, 16, 16, 17, 17, 16, 16};
 
 void task1(void)
 {
-    while (1)
+    static u8 index = 0;
+
+    if (index % 2 == 0)
     {
-        P01 = 0;
-        task_sleep(50);
-        P01 = 1;
-        task_sleep(50);
+        play_note_soft(2, index / 2);
     }
+    else
+    {
+        stop_note_soft(2);
+    }
+    index++;
+    if (index == 16)
+    {
+        index = 0;
+    }
+    task_sleep(25);
 }

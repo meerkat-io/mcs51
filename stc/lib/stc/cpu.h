@@ -1,5 +1,5 @@
-#ifndef OS_H
-#define OS_H
+#ifndef CPU_H
+#define CPU_H
 
 #include "config.h"
 #include "compiler.h"
@@ -85,24 +85,4 @@
 #define exit_critical()     EA = 1                /* enable interrupt */
 
 extern u8 const BIT_MASKS[];
-
-#if OS_TASKS > 0
-#define task_ready(id)      tasks_status |= BIT_MASKS[id]                    /* set task is ready to run */
-#define task_start(id)      task_id = id, SP = (u8)tasks_stack[id] + 1       /* move PC to target task */
-#define task_resume(id)     task_id = id, SP = tasks_sp[id]                  /* move PC to target task */
-#define save_stack()        tasks_sp[task_id] = SP                           /* save PC of current task */
-#define enter_idle_mode()   exit_critical(), SP = (u8)task_idle_stack + 1    /* enter cpu idle mode */
-#define cpu_idle()          PCON = PCON | 0x01                               /* CPU enter idle mode */
-
-extern __idata u8 task_id;
-extern __idata u8 tasks_delay[];
-extern __idata u8 tasks_status;
-extern void (*const tasks[])(void);
-
-extern void task_suspend();
-extern void task_sleep(u8);
-extern void os_start(void);
-extern void os_tick(void) __interrupt(OS_TIMER_ISR);
-#endif
-
 #endif

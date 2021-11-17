@@ -1,11 +1,12 @@
 #ifndef PWM_H
 #define PWM_H
 
-#include "os.h"
+#include "cpu.h"
 
 /**********************************************
  *  128Hz 256 resolution PWM
  *  Tone & Note (available freq range : 129 ~ 32767)
+ *  12 * 3 note
     Note	    Freq(Hz)	Length(cm)  ReloadH ReloadL
     C4	        261.63	    131.87      125     125
     C#4/Db4 	277.18	    124.47      118     118
@@ -50,6 +51,16 @@
    {                                                                                    \
       if ((pwm_soft_status & BIT_MASK_##pwm_soft_index) != 0)                           \
       {                                                                                 \
+         if (pwm_soft_high_reload[pwm_soft_index] == 0)                                 \
+         {                                                                              \
+            pwm_soft_status &= ~BIT_MASK_##pwm_soft_index;                              \
+            PWM_SOFT_##pwm_soft_index = PWM_LOW;                                        \
+         }                                                                              \
+         else if (pwm_soft_high_reload[pwm_soft_index] == 255)                          \
+         {                                                                              \
+            pwm_soft_status &= ~BIT_MASK_##pwm_soft_index;                              \
+            PWM_SOFT_##pwm_soft_index = PWM_HIGH;                                       \
+         }                                                                              \
          if (pwm_soft_count[pwm_soft_index] == 0)                                       \
          {                                                                              \
             if (PWM_SOFT_##pwm_soft_index == PWM_LOW)                                   \
@@ -76,8 +87,6 @@
       pwm_soft_low_reload[pwm_soft_index] = 255 - duty;          \
       pwm_soft_status |= BIT_MASK_##pwm_soft_index;              \
    }
-#define set_pwm_soft_duty_on(pwm_soft_index) pwm_soft_status &= ~BIT_MASK_##pwm_soft_index, PWM_SOFT_##pwm_soft_index = PWM_HIGH
-#define set_pwm_soft_duty_off(pwm_soft_index) pwm_soft_status &= ~BIT_MASK_##pwm_soft_index, PWM_SOFT_##pwm_soft_index = PWM_LOW
 #define set_tone_soft(pwm_soft_index, freq)                                                      \
    {                                                                                             \
       pwm_soft_status |= BIT_MASK_##pwm_soft_index;                                              \
@@ -85,14 +94,14 @@
       pwm_soft_high_reload[pwm_soft_index] = (u8)(reload / 2);                                   \
       pwm_soft_low_reload[pwm_soft_index] = (u8)(reload - pwm_soft_high_reload[pwm_soft_index]); \
    }
-#define unset_tone_soft(pwm_soft_index) pwm_soft_status &= ~BIT_MASK_##pwm_soft_index, PWM_##pwm_soft_index = PWM_LOW
+#define unset_tone_soft(pwm_soft_index) pwm_soft_status &= ~BIT_MASK_##pwm_soft_index, PWM_SOFT_##pwm_soft_index = PWM_LOW
 #define play_note_soft(pwm_soft_index, note_soft_index)                               \
    {                                                                                  \
       pwm_soft_status |= BIT_MASK_##pwm_soft_index;                                   \
       pwm_soft_high_reload[pwm_soft_index] = note_soft_reload_high[note_soft_index];  \
       pwm_soft_low_reload[pwm_soft_index] = note_soft_reload_low[note_soft_index];    \
    }
-#define stop_note_soft(pwm_soft_index) pwm_soft_status &= ~BIT_MASK_##pwm_soft_index
+#define stop_note_soft(pwm_soft_index) pwm_soft_status &= ~BIT_MASK_##pwm_soft_index, PWM_SOFT_##pwm_soft_index = PWM_LOW
 
 extern u8 __idata pwm_soft_status;
 extern u8 __idata pwm_soft_count[];

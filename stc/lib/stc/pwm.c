@@ -12,6 +12,7 @@ u8 const note_soft_reload_low[] = {125, 118, 111, 105, 99, 94, 88, 83, 79, 74, 7
 
 void pwm_soft_start(void)
 {
+    // set timer
 #if PWM_SOFT_TIMER_MODE_1T > 0
     timer_12x(PWM_SOFT_TIMER);
 #endif
@@ -28,7 +29,6 @@ void pwm_soft_stop(void)
 
 void pwm_soft_tick(void) __interrupt(PWM_SOFT_TIMER_ISR)
 {
-    enter_critical();
 #ifdef PWM_SOFT_0
     update_pwm_soft(0);
 #endif
@@ -53,6 +53,5 @@ void pwm_soft_tick(void) __interrupt(PWM_SOFT_TIMER_ISR)
 #ifdef PWM_SOFT_7
     update_pwm_soft(7);
 #endif
-    //exit_critical();
 }
 #endif
