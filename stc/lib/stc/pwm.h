@@ -101,8 +101,8 @@ extern u8 __idata pwm_soft_low_reload[];
 extern u8 const note_soft_reload_high[];
 extern u8 const note_soft_reload_low[];
 
-extern void start_pwm_soft(void);
-extern void stop_pwm_soft(void);
+extern void pwm_soft_start(void);
+extern void pwm_soft_stop(void);
 extern void pwm_soft_tick(void) __interrupt(PWM_SOFT_TIMER_ISR);
 #endif
 

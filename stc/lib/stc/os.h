@@ -71,7 +71,7 @@
 #define clock_divide(freq)                        __clock_divide(freq)
 #define __timer_12x(timer)                        TIMER_##timer##_1T()
 #define timer_12x(timer)                          __timer_12x(timer)
-#define reset_timer()                             TMOD = 0x00;
+#define reset_timer()                             TMOD = 0x00
 #define __load_timer(timer, time)                 LOAD_TIMER_##timer(time)
 #define load_timer(timer, time)                   __load_timer(timer, time)
 #define __start_timer(timer)                      START_TIMER_##timer()
@@ -84,6 +84,8 @@
 #define enter_critical()    EA = 0                /* disable interrupt */
 #define exit_critical()     EA = 1                /* enable interrupt */
 
+extern u8 const BIT_MASKS[];
+
 #if OS_TASKS > 0
 #define task_ready(id)      tasks_status |= BIT_MASKS[id]                    /* set task is ready to run */
 #define task_start(id)      task_id = id, SP = (u8)tasks_stack[id] + 1       /* move PC to target task */
@@ -95,9 +97,7 @@
 extern __idata u8 task_id;
 extern __idata u8 tasks_delay[];
 extern __idata u8 tasks_status;
-
 extern void (*const tasks[])(void);
-extern u8 const BIT_MASKS[];
 
 extern void task_suspend();
 extern void task_sleep(u8);

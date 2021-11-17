@@ -27,7 +27,7 @@
 #define PWM_LOW 1
 #endif
 #define PWM_SOFT                1                 /* soft pwm/tone pin count */
-#define PWM_SOFT_0              P26               /* pwm pin 0 */
+#define PWM_SOFT_0              P07               /* pwm pin 0 */
 #define PWM_SOFT_TIMER          1                 /* pwm timer, default : timer 1 */
 #define PWM_SOFT_TIMER_ISR      3                 /* pwm timer interrupt (for timer 1) */ 
 #define PWM_SOFT_TIMER_MODE_1T  1                 /* use 1T timer mode: 1 yes, 0 no */
