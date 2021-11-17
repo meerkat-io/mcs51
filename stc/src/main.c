@@ -45,24 +45,23 @@ void task0(void)
     task_sleep(10);
 }
 
-const u8 song[8] = {12, 12, 16, 16, 17, 17, 16, 16};
+const u8 song[30] = {24, 100, 24, 100, 28, 100, 28, 100, 29, 100, 29, 100, 28, 28, 100, 27, 100, 27, 100, 26, 100, 26, 100, 25, 100, 25, 100, 24, 24, 100};
 
 void task1(void)
 {
     static u8 index = 0;
-
-    if (index % 2 == 0)
-    {
-        play_note_soft(2, index / 2);
-    }
+    u8 sleep = 50;
+    if (song[index] == 100) {
+        stop_note_soft(2);
+        sleep = 10;
+    } 
     else
     {
-        stop_note_soft(2);
+        play_note_soft(2, song[index]);
     }
     index++;
-    if (index == 16)
-    {
+    if (index == 30) {
         index = 0;
     }
-    task_sleep(25);
+    task_sleep(sleep);
 }
