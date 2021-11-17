@@ -19,6 +19,7 @@ void main(void)
     gpio_mode(GPIO_OUTPUT_PUSH_PULL, 0, 5);
     gpio_mode(GPIO_OUTPUT_PUSH_PULL, 0, 6);
     gpio_mode(GPIO_OUTPUT_PUSH_PULL, 0, 7);
+    gpio_mode(GPIO_OUTPUT_PUSH_PULL, 5, 4);
 
     P00 = 1;
     P01 = 1;
@@ -57,7 +58,7 @@ void task1(void)
     } 
     else
     {
-        play_note_soft(2, song[index]);
+        play_note_soft(2, song[index] - 12);
     }
     index++;
     if (index == 30) {
